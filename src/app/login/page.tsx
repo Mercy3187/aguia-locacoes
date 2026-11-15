@@ -23,7 +23,7 @@ export default function LoginPage() {
 
       <div className="relative w-full max-w-sm">
         <div className="mb-9 flex flex-col items-center">
-          <Logo className="text-4xl" />
+          <Logo tamanho="login" />
           <p className="mt-4 text-sm text-muted">Gestão interna de frota</p>
         </div>
 

@@ -29,7 +29,7 @@ function iniciais(nome: string): string {
 function Marca({ compacta = false }: { compacta?: boolean }) {
   return (
     <Link href="/" className="block shrink-0" aria-label={`${EMPRESA.nome} — início`}>
-      <Logo className={compacta ? "text-lg" : "text-2xl"} />
+      <Logo tamanho={compacta ? "compacto" : "menu"} />
     </Link>
   );
 }
