@@ -203,6 +203,28 @@ export function documentoValido(v: string): boolean {
   return false;
 }
 
+/**
+ * Máscara aplicada enquanto a pessoa digita: põe os pontos, a barra e o
+ * traço conforme os dígitos vão entrando e corta o que passar do tamanho.
+ * Sem `tipo`, decide pelo tamanho: até 11 dígitos é CPF, acima disso CNPJ.
+ */
+export function mascararDocumento(v: string, tipo?: "FISICA" | "JURIDICA"): string {
+  const max = tipo === "FISICA" ? 11 : 14;
+  const d = soDigitos(v).slice(0, max);
+  const cnpj = tipo === "JURIDICA" || (!tipo && d.length > 11);
+  if (cnpj) {
+    return d
+      .replace(/^(\d{2})(\d)/, "$1.$2")
+      .replace(/^(\d{2})\.(\d{3})(\d)/, "$1.$2.$3")
+      .replace(/\.(\d{3})(\d)/, ".$1/$2")
+      .replace(/(\d{4})(\d)/, "$1-$2");
+  }
+  return d
+    .replace(/(\d{3})(\d)/, "$1.$2")
+    .replace(/(\d{3})(\d)/, "$1.$2")
+    .replace(/(\d{3})(\d{1,2})$/, "$1-$2");
+}
+
 /** "12345678901" → "123.456.789-01"; CNPJ no formato 00.000.000/0000-00. */
 export function formatarDocumento(v: string): string {
   const d = soDigitos(v);

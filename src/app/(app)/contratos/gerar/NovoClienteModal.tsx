@@ -2,6 +2,8 @@
 
 import { useEffect, useState, useTransition } from "react";
 import { Field, FormError, inputClass } from "@/components/ui";
+import { DocumentoInput, erroDocumento } from "@/components/DocumentoInput";
+import { mascararDocumento, soDigitos } from "@/lib/contrato-gerar";
 import { criarClienteRapido } from "./actions";
 
 /**
@@ -37,6 +39,13 @@ export function NovoClienteModal({
   }, [onFechar]);
 
   const salvar = () => {
+    const erroDoc = soDigitos(cpf)
+      ? erroDocumento(cpf, tipo)
+      : `Informe o ${tipo === "FISICA" ? "CPF" : "CNPJ"}.`;
+    if (erroDoc) {
+      setErro(erroDoc);
+      return;
+    }
     setErro(undefined);
     startTransition(async () => {
       const r = await criarClienteRapido({ cpf, tipo, nome, razaoSocial });
@@ -78,20 +87,18 @@ export function NovoClienteModal({
 
           <div className="grid gap-4 sm:grid-cols-2">
             <Field label={tipo === "FISICA" ? "CPF:" : "CNPJ:"} htmlFor="nc-cpf" required>
-              <input
-                id="nc-cpf"
-                value={cpf}
-                onChange={(e) => setCpf(e.target.value)}
-                inputMode="numeric"
-                autoComplete="off"
-                className={inputClass}
-              />
+              <DocumentoInput id="nc-cpf" value={cpf} onChange={setCpf} tipo={tipo} required />
             </Field>
             <Field label="Tipo:" htmlFor="nc-tipo" required>
               <select
                 id="nc-tipo"
                 value={tipo}
-                onChange={(e) => setTipo(e.target.value as "FISICA" | "JURIDICA")}
+                onChange={(e) => {
+                  const novo = e.target.value as "FISICA" | "JURIDICA";
+                  setTipo(novo);
+                  // Reaplica a máscara no formato do tipo novo.
+                  setCpf((atual) => mascararDocumento(atual, novo));
+                }}
                 className={inputClass}
               >
                 <option value="FISICA">FÍSICA</option>

@@ -1,9 +1,11 @@
 "use client";
 
-import { useActionState } from "react";
+import { useActionState, useState } from "react";
 import Link from "next/link";
 import { Field, FormError, inputClass } from "@/components/ui";
 import { SubmitButton } from "@/components/SubmitButton";
+import { DocumentoInput, erroDocumento } from "@/components/DocumentoInput";
+import { mascararDocumento } from "@/lib/contrato-gerar";
 import { formatPhoneForWhatsApp } from "@/lib/utils";
 import type { FormState } from "./actions";
 
@@ -27,17 +29,28 @@ export function CustomerForm({
   submitLabel: string;
 }) {
   const [state, formAction] = useActionState(action, {});
+  const [documento, setDocumento] = useState(() => mascararDocumento(defaults.cpfCnpj ?? ""));
+  const [erroLocal, setErroLocal] = useState<string>();
 
   return (
-    <form action={formAction} className="max-w-2xl space-y-6">
-      <FormError message={state.error} />
+    <form
+      action={formAction}
+      onSubmit={(e) => {
+        // Barra o envio antes de ir ao servidor quando o CPF/CNPJ não fecha.
+        const erro = erroDocumento(documento);
+        setErroLocal(erro);
+        if (erro) e.preventDefault();
+      }}
+      className="max-w-2xl space-y-6"
+    >
+      <FormError message={erroLocal ?? state.error} />
 
       <section className="grid gap-4 sm:grid-cols-2">
         <Field label="Nome / Razão social" htmlFor="name" required>
           <input id="name" name="name" required defaultValue={defaults.name} className={inputClass} />
         </Field>
         <Field label="CPF / CNPJ" htmlFor="cpfCnpj">
-          <input id="cpfCnpj" name="cpfCnpj" defaultValue={defaults.cpfCnpj} className={inputClass} />
+          <DocumentoInput id="cpfCnpj" name="cpfCnpj" value={documento} onChange={setDocumento} />
         </Field>
         <Field
           label="Telefone (WhatsApp)"
