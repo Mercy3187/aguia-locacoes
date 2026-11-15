@@ -1,0 +1,297 @@
+@import "tailwindcss";
+
+/*
+  Tema Águia Locações
+  Paleta tirada do próprio logo: preto, branco/prata e o vermelho da faixa
+  (#df0107 medido no PNG).
+
+  As variáveis abaixo são a única fonte da cor do sistema inteiro — mudar um
+  valor aqui repinta todas as telas. `--neon` continua existindo porque o resto
+  do código já a usa em dezenas de lugares; ela aponta para o vermelho da
+  marca, então nada precisa ser reescrito para mudar de cor.
+*/
+
+:root {
+  /* ── Superfícies ───────────────────────────────────────────────── */
+  --background: #0a0a0c;
+  --surface: #131317;
+  --surface-2: #1b1b21;
+  --surface-3: #24242c;
+
+  /* ── Texto ─────────────────────────────────────────────────────── */
+  --foreground: #f5f5f7;
+  --muted: #9a9aa6;
+  --muted-strong: #c7c7d1;
+
+  /* ── Linhas ────────────────────────────────────────────────────── */
+  --border: #26262e;
+  --border-strong: #35353f;
+
+  /* ── Marca (vermelho da logo) ──────────────────────────────────── */
+  /* Um tom acima do #df0107 do logo: o original fica escuro demais para
+     texto sobre o fundo preto. Este passa no contraste com branco por cima
+     (4.5:1) e continua legível como texto de destaque no tema escuro. */
+  --brand: #e8202a;
+  --brand-strong: #ff3a42;
+  --brand-dim: #7a1015;
+  /* Texto que fica POR CIMA do vermelho. */
+  --brand-ink: #ffffff;
+  --brand-dark: #1a0607;
+  --neon: var(--brand);
+
+  /* ── Estados ───────────────────────────────────────────────────── */
+  --success: #34d399;
+  --warning: #fb923c;
+  /* Rosado, e não vermelho puro, para "atrasado/erro" não se confundir com
+     a cor da marca. */
+  --danger: #fb7185;
+  --info: #60a5fa;
+  --purple: #a78bfa;
+
+  /* ── Séries dos gráficos ───────────────────────────────────────────
+     `--serie-frota` preenche barras grandes (receita semanal, gasto da
+     frota), então fica num tom médio — a cor da marca costuma ser clara
+     ou saturada demais para área grande. `--serie-avulso` é bem mais
+     clara que ela de propósito: diferença de luminância é o que continua
+     visível sob qualquer tipo de daltonismo. Frota em prata (as letras do
+     logo) e não em vermelho: barra grande vermelha lê como prejuízo. */
+  --serie-frota: #9aa3b5;
+  --serie-avulso: #67d3e0;
+}
+
+@theme inline {
+  --color-background: var(--background);
+  --color-surface: var(--surface);
+  --color-surface-2: var(--surface-2);
+  --color-surface-3: var(--surface-3);
+
+  --color-foreground: var(--foreground);
+  --color-muted: var(--muted);
+  --color-muted-strong: var(--muted-strong);
+
+  --color-border: var(--border);
+  --color-border-strong: var(--border-strong);
+
+  --color-brand: var(--brand);
+  --color-brand-strong: var(--brand-strong);
+  --color-brand-dim: var(--brand-dim);
+  --color-brand-ink: var(--brand-ink);
+  --color-brand-dark: var(--brand-dark);
+  --color-neon: var(--neon);
+
+  --color-success: var(--success);
+  --color-warning: var(--warning);
+  --color-danger: var(--danger);
+  --color-info: var(--info);
+  --color-purple: var(--purple);
+
+  --color-serie-frota: var(--serie-frota);
+  --color-serie-avulso: var(--serie-avulso);
+
+  --font-sans: var(--font-geist-sans);
+  --font-mono: var(--font-geist-mono);
+}
+
+body {
+  background: var(--background);
+  color: var(--foreground);
+  font-family: var(--font-sans), system-ui, Arial, Helvetica, sans-serif;
+  /* Sem o cinza de toque do iOS/Android ao tocar em botão e link. */
+  -webkit-tap-highlight-color: transparent;
+  /* Evita o "puxão" elástico arrastar a página inteira no celular. */
+  overscroll-behavior-y: contain;
+}
+
+::selection {
+  background: color-mix(in srgb, var(--brand) 30%, transparent);
+  color: var(--foreground);
+}
+
+/* Foco visível na cor da marca — acessibilidade sem poluir o visual. */
+:focus-visible {
+  outline: 2px solid color-mix(in srgb, var(--brand) 70%, transparent);
+  outline-offset: 2px;
+}
+
+/* ── Barra de rolagem discreta ───────────────────────────────────────── */
+* {
+  scrollbar-width: thin;
+  scrollbar-color: var(--border-strong) transparent;
+}
+*::-webkit-scrollbar {
+  width: 10px;
+  height: 10px;
+}
+*::-webkit-scrollbar-track {
+  background: transparent;
+}
+*::-webkit-scrollbar-thumb {
+  background: var(--border-strong);
+  border: 3px solid transparent;
+  background-clip: content-box;
+  border-radius: 999px;
+}
+*::-webkit-scrollbar-thumb:hover {
+  background: color-mix(in srgb, var(--brand) 45%, var(--border-strong));
+  background-clip: content-box;
+}
+
+/* ── Celular ─────────────────────────────────────────────────────────────
+   Ajustes que só fazem sentido em tela pequena e por toque. */
+
+@media (max-width: 767px) {
+  /* O iPhone dá zoom sozinho ao focar um campo com fonte menor que 16px, e
+     depois não volta. Forçar 16px nos campos elimina esse pulo. */
+  input,
+  select,
+  textarea {
+    font-size: 16px !important;
+  }
+}
+
+@media (pointer: coarse) {
+  /* Alvo de toque decente: dedo não acerta botão de 24px. */
+  button,
+  a[href],
+  select,
+  [role="button"] {
+    min-height: 40px;
+  }
+
+  /* Links dentro de texto corrido continuam normais. */
+  p a[href],
+  li a[href],
+  td a[href],
+  span a[href] {
+    min-height: 0;
+  }
+}
+
+/* Respiro do notch e da barra inferior do iPhone. */
+.safe-top {
+  padding-top: env(safe-area-inset-top, 0px);
+}
+.safe-bottom {
+  padding-bottom: env(safe-area-inset-bottom, 0px);
+}
+.safe-x {
+  padding-left: env(safe-area-inset-left, 0px);
+  padding-right: env(safe-area-inset-right, 0px);
+}
+
+/* ── Realces reutilizáveis ───────────────────────────────────────────── */
+
+/* Brilho da cor da marca — usado no item ativo do menu e em destaques. */
+.neon-glow {
+  box-shadow:
+    0 0 0 1px color-mix(in srgb, var(--brand) 40%, transparent),
+    0 0 18px color-mix(in srgb, var(--brand) 22%, transparent);
+}
+
+/* Cartão com um leve degradê no topo, que dá profundidade sem pesar. */
+.card-sheen {
+  background-image: linear-gradient(
+    to bottom,
+    color-mix(in srgb, var(--foreground) 4%, transparent),
+    transparent 42%
+  );
+}
+
+/* Fio vermelho no topo de uma seção em destaque. */
+.brand-rule {
+  background-image: linear-gradient(
+    90deg,
+    var(--brand) 0%,
+    color-mix(in srgb, var(--brand) 30%, transparent) 45%,
+    transparent 100%
+  );
+}
+
+/* Entrada suave dos blocos do painel. */
+@keyframes surgir {
+  from {
+    opacity: 0;
+    transform: translateY(6px);
+  }
+  to {
+    opacity: 1;
+    transform: none;
+  }
+}
+.surgir {
+  animation: surgir 0.32s ease-out both;
+}
+@media (prefers-reduced-motion: reduce) {
+  .surgir {
+    animation: none;
+  }
+}
+
+/* ────────────────────────────────────────────────────────────────────────
+   IMPRESSÃO — o recibo de multas que o motorista recebe
+   ────────────────────────────────────────────────────────────────────────
+   O documento é gerado pelo próprio navegador ("Salvar como PDF"): sai
+   vetorial, com o texto selecionável, e sem depender de biblioteca nenhuma
+   nem de servidor para montar o arquivo.
+
+   A regra é simples: ao imprimir, tudo some menos o que estiver dentro de
+   `.folha`. O menu lateral, os botões e o formulário de upload não fazem
+   sentido num papel que vai para o cliente. */
+.folha {
+  display: none;
+}
+
+@media print {
+  /* O tema do sistema é escuro. No papel, isso viraria uma página preta
+     inteira — daí a inversão para fundo branco e texto preto. */
+  :root,
+  body {
+    background: #fff !important;
+    color: #111 !important;
+  }
+
+  body * {
+    visibility: hidden;
+  }
+
+  .folha,
+  .folha * {
+    visibility: visible;
+  }
+
+  .folha {
+    display: block;
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    margin: 0;
+    padding: 0;
+    background: #fff;
+    color: #111;
+    font-size: 11pt;
+  }
+
+  /* Por padrão o navegador descarta cores de fundo ao imprimir, para economizar
+     tinta. Aqui isso apagaria a faixa preta do cabeçalho — e o logo, que é
+     branco, sumiria junto com ela. */
+  .folha,
+  .folha * {
+    -webkit-print-color-adjust: exact;
+    print-color-adjust: exact;
+  }
+
+  /* Uma linha da tabela não pode ficar partida entre duas páginas. */
+  .folha tr,
+  .folha .nao-quebrar {
+    break-inside: avoid;
+  }
+
+  .folha thead {
+    display: table-header-group;
+  }
+
+  @page {
+    size: A4;
+    margin: 14mm 12mm;
+  }
+}
