@@ -28,7 +28,7 @@ export function ExportarButton({ resumo }: { resumo: string }) {
           href={`https://wa.me/?text=${encodeURIComponent(resumo)}`}
           target="_blank"
           rel="noopener noreferrer"
-          className="rounded-lg bg-brand px-4 py-2 text-sm font-semibold text-white transition hover:bg-brand/90"
+          className="rounded-lg bg-brand px-4 py-2 text-sm font-semibold text-brand-ink transition hover:bg-brand/90"
         >
           Enviar no WhatsApp
         </a>

@@ -231,7 +231,7 @@ export function DriverForm({
       <button
         onClick={submit}
         disabled={pending}
-        className="w-full rounded-lg bg-brand px-4 py-3 text-base font-semibold text-white transition hover:bg-brand/90 disabled:opacity-60"
+        className="w-full rounded-lg bg-brand px-4 py-3 text-base font-semibold text-brand-ink transition hover:bg-brand/90 disabled:opacity-60"
       >
         {pending ? status ?? "Enviando..." : "Enviar KM"}
       </button>

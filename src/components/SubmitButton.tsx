@@ -20,7 +20,7 @@ export function SubmitButton({
       className={cn(
         "inline-flex items-center justify-center rounded-lg px-4 py-2.5 text-sm font-semibold transition disabled:opacity-60",
         variant === "primary"
-          ? "bg-brand text-white hover:bg-brand/90"
+          ? "bg-brand text-brand-ink hover:bg-brand/90"
           : "border border-danger/50 text-danger hover:bg-danger/10"
       )}
     >
